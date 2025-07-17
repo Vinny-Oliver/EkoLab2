@@ -1,0 +1,103 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Entrar na EkoLab</h1>
+      <p>Acesse sua conta e continue aprendendo</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Digite seu email"
+          [class.error]="isFieldInvalid('email')"
+        >
+        <div class="error-message" *ngIf="isFieldInvalid('email')">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email é obrigatório</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Email inválido</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <div class="password-input">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="senha"
+            formControlName="senha"
+            placeholder="Digite sua senha"
+            [class.error]="isFieldInvalid('senha')"
+          >
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()"
+          >
+            {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('senha')">
+          <span *ngIf="loginForm.get('senha')?.errors?.['required']">Senha é obrigatória</span>
+          <span *ngIf="loginForm.get('senha')?.errors?.['minlength']">Senha deve ter pelo menos 6 caracteres</span>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="lembrarMe">
+          <span class="checkmark"></span>
+          Lembrar de mim
+        </label>
+        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="loginForm.invalid || isLoading"
+        >
+          <span *ngIf="isLoading" class="loading-spinner"></span>
+          {{ isLoading ? 'Entrando...' : 'Entrar' }}
+        </button>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+    </form>
+
+    <div class="login-footer">
+      <p>Não tem uma conta? <a routerLink="/cadastro">Cadastre-se aqui</a></p>
+    </div>
+  </div>
+
+  <div class="login-illustration">
+    <div class="illustration-content">
+      <h2>Bem-vindo de volta!</h2>
+      <p>Continue sua jornada de aprendizado na EkoLab</p>
+      <div class="features">
+        <div class="feature">
+          <i class="icon-check"></i>
+          <span>Acesso a todos os cursos</span>
+        </div>
+        <div class="feature">
+          <i class="icon-check"></i>
+          <span>Certificados reconhecidos</span>
+        </div>
+        <div class="feature">
+          <i class="icon-check"></i>
+          <span>Suporte 24/7</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

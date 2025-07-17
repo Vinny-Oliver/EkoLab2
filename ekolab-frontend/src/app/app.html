@@ -1,0 +1,57 @@
+<header class="header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a routerLink="/" class="nav-logo">
+        <img src="assets/img/logiis.png" alt="Logo" />
+      </a>
+      
+      <div class="nav-menu" [class.active]="isMenuOpen">
+        <a routerLink="/cursos" class="nav-link" routerLinkActive="active">CURSOS</a>
+        <a routerLink="/login" class="nav-link" routerLinkActive="active">LOGIN</a>
+        <a routerLink="/cadastro" class="nav-link" routerLinkActive="active">CADASTRO</a>
+        <a routerLink="/sobre" class="nav-link" routerLinkActive="active">SOBRE</a>
+      </div>
+      
+      <div class="nav-toggle" (click)="toggleMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>EkoLab</h3>
+        <p>Capacitando a comunidade negra através da tecnologia e educação.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Links Rápidos</h4>
+        <ul>
+          <li><a routerLink="/cursos">Cursos</a></li>
+          <li><a routerLink="/sobre">Sobre</a></li>
+          <li><a routerLink="/cadastro">Cadastre-se</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Contato</h4>
+        <p>Email: contato&#64;ekolab.com.br</p>
+        <p>Telefone: (21) 99999-9999</p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 EkoLab. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+

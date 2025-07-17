@@ -1,0 +1,180 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Bem-vindo à <span class="highlight">EkoLab</span>!
+        </h1>
+        <p class="hero-subtitle">
+          Capacitando e empoderando a comunidade negra através da tecnologia e educação de qualidade.
+        </p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" routerLink="/cursos">
+            <i class="icon-play"></i>
+            Explore Nossos Cursos
+          </button>
+          <button class="btn btn-secondary" routerLink="/cadastro">
+            <i class="icon-user-plus"></i>
+            Cadastre-se Grátis
+          </button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-graphic">
+          <div class="floating-card card-1">
+            <i class="icon-code"></i>
+            <span>Programação</span>
+          </div>
+          <div class="floating-card card-2">
+            <i class="icon-database"></i>
+            <span>Banco de Dados</span>
+          </div>
+          <div class="floating-card card-3">
+            <i class="icon-globe"></i>
+            <span>Web Development</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Courses Section -->
+  <section class="courses-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Cursos em Destaque</h2>
+        <p class="section-subtitle">Descubra nossa seleção de cursos mais populares</p>
+      </div>
+      
+      <div class="courses-grid" *ngIf="featuredCourses.length > 0; else noCourses">
+        <div class="course-card" *ngFor="let course of featuredCourses">
+          <div class="course-image">
+            <img [src]="course.imagem || '/assets/default-course.jpg'" [alt]="course.nome">
+            <div class="course-badge">{{ course.nivel }}</div>
+          </div>
+          <div class="course-content">
+            <h3 class="course-title">{{ course.nome }}</h3>
+            <p class="course-description">{{ course.descricao | slice:0:100 }}...</p>
+            <div class="course-meta">
+              <span class="course-duration">
+                <i class="icon-clock"></i>
+                {{ course.cargaHoraria }}h
+              </span>
+              <span class="course-price" *ngIf="course.preco > 0; else freeCourse">
+                R$ {{ course.preco | number:'1.2-2' }}
+              </span>
+              <ng-template #freeCourse>
+                <span class="course-price free">Gratuito</span>
+              </ng-template>
+            </div>
+            <button class="btn btn-outline">Ver Detalhes</button>
+          </div>
+        </div>
+      </div>
+      
+      <ng-template #noCourses>
+        <div class="no-courses">
+          <div class="placeholder-courses">
+            <div class="course-card placeholder">
+              <div class="course-image placeholder-img"></div>
+              <div class="course-content">
+                <h3>Curso de Programação Web</h3>
+                <p>Aprenda HTML, CSS, JavaScript e frameworks modernos para criar aplicações web incríveis.</p>
+                <div class="course-meta">
+                  <span class="course-duration">
+                    <i class="icon-clock"></i>
+                    40h
+                  </span>
+                  <span class="course-price free">Gratuito</span>
+                </div>
+                <button class="btn btn-outline">Ver Detalhes</button>
+              </div>
+            </div>
+            
+            <div class="course-card placeholder">
+              <div class="course-image placeholder-img"></div>
+              <div class="course-content">
+                <h3>Banco de Dados</h3>
+                <p>Domine SQL, MySQL e conceitos fundamentais de modelagem de dados.</p>
+                <div class="course-meta">
+                  <span class="course-duration">
+                    <i class="icon-clock"></i>
+                    30h
+                  </span>
+                  <span class="course-price free">Gratuito</span>
+                </div>
+                <button class="btn btn-outline">Ver Detalhes</button>
+              </div>
+            </div>
+            
+            <div class="course-card placeholder">
+              <div class="course-image placeholder-img"></div>
+              <div class="course-content">
+                <h3>Python para Iniciantes</h3>
+                <p>Comece sua jornada na programação com Python, uma das linguagens mais populares.</p>
+                <div class="course-meta">
+                  <span class="course-duration">
+                    <i class="icon-clock"></i>
+                    35h
+                  </span>
+                  <span class="course-price free">Gratuito</span>
+                </div>
+                <button class="btn btn-outline">Ver Detalhes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      
+      <div class="section-footer">
+        <button class="btn btn-primary" routerLink="/cursos">Ver Todos os Cursos</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Alunos Ativos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Cursos Disponíveis</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">95%</div>
+          <div class="stat-label">Taxa de Satisfação</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Suporte Online</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-content">
+        <div class="contact-text">
+          <h2>Pronto para começar sua jornada?</h2>
+          <p>Junte-se à nossa comunidade e transforme seu futuro através da tecnologia.</p>
+        </div>
+        <div class="contact-actions">
+          <button class="btn btn-primary" routerLink="/cadastro">
+            Comece Agora
+          </button>
+          <button class="btn btn-outline" routerLink="/sobre">
+            Saiba Mais
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+

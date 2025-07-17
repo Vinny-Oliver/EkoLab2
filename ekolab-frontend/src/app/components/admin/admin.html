@@ -1,0 +1,547 @@
+<div class="admin-container">
+  <!-- Header da área administrativa -->
+  <header class="admin-header">
+    <div class="admin-header-content">
+      <h1>Área Administrativa</h1>
+      <div class="admin-user-info">
+        <span>Bem-vindo, {{ currentUser?.nomeCompleto }}</span>
+        <button class="btn btn-outline" (click)="logout()">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação da área administrativa -->
+  <nav class="admin-nav">
+    <div class="nav-tabs">
+      <button 
+        class="nav-tab" 
+        [class.active]="activeTab === 'dashboard'"
+        (click)="setActiveTab('dashboard')"
+      >
+        Dashboard
+      </button>
+      <button 
+        class="nav-tab" 
+        [class.active]="activeTab === 'cursos'"
+        (click)="setActiveTab('cursos')"
+      >
+        Cursos
+      </button>
+      <button 
+        class="nav-tab" 
+        [class.active]="activeTab === 'usuarios'"
+        (click)="setActiveTab('usuarios')"
+      >
+        Usuários
+      </button>
+    </div>
+  </nav>
+
+  <!-- Conteúdo da área administrativa -->
+  <main class="admin-content">
+    
+    <!-- Dashboard -->
+    <div class="tab-content" *ngIf="activeTab === 'dashboard'">
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="icon-book"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ estatisticas?.totalCursos || 0 }}</h3>
+            <p>Total de Cursos</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="icon-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ estatisticas?.cursosAtivos || 0 }}</h3>
+            <p>Cursos Ativos</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="icon-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ estatisticasUsuarios?.totalUsuarios || 0 }}</h3>
+            <p>Total de Usuários</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="icon-user-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ estatisticasUsuarios?.usuariosAtivos || 0 }}</h3>
+            <p>Usuários Ativos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gestão de Cursos -->
+    <div class="tab-content" *ngIf="activeTab === 'cursos'">
+      <div class="section-header">
+        <h2>Gestão de Cursos</h2>
+        <button class="btn btn-primary" (click)="abrirModalCurso()">
+          <i class="icon-plus"></i>
+          Novo Curso
+        </button>
+      </div>
+
+      <!-- Filtros para cursos -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <input
+            type="text"
+            placeholder="Buscar curso..."
+            [(ngModel)]="filtrosCurso.busca"
+            (input)="filtrarCursos()"
+            class="filter-input"
+          >
+        </div>
+        <div class="filter-group">
+          <select [(ngModel)]="filtrosCurso.categoria" (change)="filtrarCursos()" class="filter-select">
+            <option value="">Todas as categorias</option>
+            <option value="Desenvolvimento Web">Desenvolvimento Web</option>
+            <option value="Banco de Dados">Banco de Dados</option>
+            <option value="Programação">Programação</option>
+            <option value="Mobile">Mobile</option>
+            <option value="DevOps">DevOps</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <select [(ngModel)]="filtrosCurso.status" (change)="filtrarCursos()" class="filter-select">
+            <option value="">Todos os status</option>
+            <option value="ATIVO">Ativo</option>
+            <option value="INATIVO">Inativo</option>
+            <option value="EM_BREVE">Em Breve</option>
+            <option value="FINALIZADO">Finalizado</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabela de cursos -->
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Instrutor</th>
+              <th>Nível</th>
+              <th>Modalidade</th>
+              <th>Preço</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let curso of cursosFiltrados">
+              <td>{{ curso.id }}</td>
+              <td>{{ curso.nome }}</td>
+              <td>{{ curso.categoria }}</td>
+              <td>{{ curso.instrutor }}</td>
+              <td>{{ getNivelLabel(curso.nivel) }}</td>
+              <td>{{ getModalidadeLabel(curso.modalidade) }}</td>
+              <td>{{ curso.preco > 0 ? (curso.preco | currency:'BRL') : 'Gratuito' }}</td>
+              <td>
+                <span class="status-badge" [class]="'status-' + curso.status.toLowerCase()">
+                  {{ getStatusLabel(curso.status) }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button 
+                    class="btn-icon btn-edit" 
+                    (click)="editarCurso(curso)"
+                    title="Editar"
+                  >
+                    <i class="icon-edit"></i>
+                  </button>
+                  <button 
+                    class="btn-icon btn-toggle" 
+                    (click)="toggleStatusCurso(curso)"
+                    [title]="curso.status === 'ATIVO' ? 'Inativar' : 'Ativar'"
+                  >
+                    <i [class]="curso.status === 'ATIVO' ? 'icon-eye-off' : 'icon-eye'"></i>
+                  </button>
+                  <button 
+                    class="btn-icon btn-delete" 
+                    (click)="deletarCurso(curso)"
+                    title="Excluir"
+                  >
+                    <i class="icon-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Gestão de Usuários -->
+    <div class="tab-content" *ngIf="activeTab === 'usuarios'">
+      <div class="section-header">
+        <h2>Gestão de Usuários</h2>
+        <button class="btn btn-primary" (click)="abrirModalUsuario()">
+          <i class="icon-plus"></i>
+          Novo Usuário
+        </button>
+      </div>
+
+      <!-- Filtros para usuários -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <input
+            type="text"
+            placeholder="Buscar usuário..."
+            [(ngModel)]="filtrosUsuario.busca"
+            (input)="filtrarUsuarios()"
+            class="filter-input"
+          >
+        </div>
+        <div class="filter-group">
+          <select [(ngModel)]="filtrosUsuario.tipo" (change)="filtrarUsuarios()" class="filter-select">
+            <option value="">Todos os tipos</option>
+            <option value="USER">Usuário</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <select [(ngModel)]="filtrosUsuario.ativo" (change)="filtrarUsuarios()" class="filter-select">
+            <option value="">Todos os status</option>
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabela de usuários -->
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>CPF</th>
+              <th>Tipo</th>
+              <th>Status</th>
+              <th>Data Cadastro</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuario of usuariosFiltrados">
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.nomeCompleto }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ formatCpf(usuario.cpf) }}</td>
+              <td>
+                <span class="type-badge" [class]="'type-' + usuario.tipoUsuario.toLowerCase()">
+                  {{ usuario.tipoUsuario === 'ADMIN' ? 'Admin' : 'Usuário' }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [class]="usuario.ativo ? 'status-ativo' : 'status-inativo'">
+                  {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                </span>
+              </td>
+              <td>{{ formatDate(usuario.dataCriacao) }}</td>
+              <td>
+                <div class="action-buttons">
+                  <button 
+                    class="btn-icon btn-edit" 
+                    (click)="editarUsuario(usuario)"
+                    title="Editar"
+                  >
+                    <i class="icon-edit"></i>
+                  </button>
+                  <button 
+                    class="btn-icon btn-toggle" 
+                    (click)="toggleStatusUsuario(usuario)"
+                    [title]="usuario.ativo ? 'Desativar' : 'Ativar'"
+                  >
+                    <i [class]="usuario.ativo ? 'icon-user-x' : 'icon-user-check'"></i>
+                  </button>
+                  <button 
+                    class="btn-icon btn-delete" 
+                    (click)="deletarUsuario(usuario)"
+                    title="Excluir"
+                  >
+                    <i class="icon-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal para Curso -->
+<div class="modal-overlay" *ngIf="showModalCurso" (click)="fecharModalCurso()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ cursoEditando ? 'Editar Curso' : 'Novo Curso' }}</h3>
+      <button class="btn-close" (click)="fecharModalCurso()">
+        <i class="icon-x"></i>
+      </button>
+    </div>
+    
+    <form [formGroup]="cursoForm" (ngSubmit)="salvarCurso()" class="modal-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nome">Nome do Curso *</label>
+          <input
+            type="text"
+            id="nome"
+            formControlName="nome"
+            [class.error]="isFieldInvalid('nome')"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="categoria">Categoria *</label>
+          <input
+            type="text"
+            id="categoria"
+            formControlName="categoria"
+            [class.error]="isFieldInvalid('categoria')"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descricao">Descrição *</label>
+        <textarea
+          id="descricao"
+          formControlName="descricao"
+          rows="3"
+          [class.error]="isFieldInvalid('descricao')"
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="instrutor">Instrutor *</label>
+          <input
+            type="text"
+            id="instrutor"
+            formControlName="instrutor"
+            [class.error]="isFieldInvalid('instrutor')"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="cargaHoraria">Carga Horária *</label>
+          <input
+            type="number"
+            id="cargaHoraria"
+            formControlName="cargaHoraria"
+            [class.error]="isFieldInvalid('cargaHoraria')"
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nivel">Nível *</label>
+          <select
+            id="nivel"
+            formControlName="nivel"
+            [class.error]="isFieldInvalid('nivel')"
+          >
+            <option value="">Selecione o nível</option>
+            <option value="INICIANTE">Iniciante</option>
+            <option value="INTERMEDIARIO">Intermediário</option>
+            <option value="AVANCADO">Avançado</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="modalidade">Modalidade *</label>
+          <select
+            id="modalidade"
+            formControlName="modalidade"
+            [class.error]="isFieldInvalid('modalidade')"
+          >
+            <option value="">Selecione a modalidade</option>
+            <option value="ONLINE">Online</option>
+            <option value="PRESENCIAL">Presencial</option>
+            <option value="HIBRIDO">Híbrido</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="preco">Preço *</label>
+          <input
+            type="number"
+            id="preco"
+            formControlName="preco"
+            step="0.01"
+            min="0"
+            [class.error]="isFieldInvalid('preco')"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="dataInicio">Data de Início *</label>
+          <input
+            type="date"
+            id="dataInicio"
+            formControlName="dataInicio"
+            [class.error]="isFieldInvalid('dataInicio')"
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="status">Status *</label>
+          <select
+            id="status"
+            formControlName="status"
+            [class.error]="isFieldInvalid('status')"
+          >
+            <option value="ATIVO">Ativo</option>
+            <option value="INATIVO">Inativo</option>
+            <option value="EM_BREVE">Em Breve</option>
+            <option value="FINALIZADO">Finalizado</option>
+          </select>
+        </div>
+        
+        <div class="form-group checkbox-group">
+          <label>
+            <input
+              type="checkbox"
+              formControlName="certificado"
+            >
+            Oferece certificado
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" (click)="fecharModalCurso()">
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="cursoForm.invalid || isLoading"
+        >
+          {{ isLoading ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal para Usuário -->
+<div class="modal-overlay" *ngIf="showModalUsuario" (click)="fecharModalUsuario()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ usuarioEditando ? 'Editar Usuário' : 'Novo Usuário' }}</h3>
+      <button class="btn-close" (click)="fecharModalUsuario()">
+        <i class="icon-x"></i>
+      </button>
+    </div>
+    
+    <form [formGroup]="usuarioForm" (ngSubmit)="salvarUsuario()" class="modal-form">
+      <div class="form-group">
+        <label for="nomeCompleto">Nome Completo *</label>
+        <input
+          type="text"
+          id="nomeCompleto"
+          formControlName="nomeCompleto"
+          [class.error]="isFieldInvalidUsuario('nomeCompleto')"
+        >
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            [class.error]="isFieldInvalidUsuario('email')"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="cpf">CPF *</label>
+          <input
+            type="text"
+            id="cpf"
+            formControlName="cpf"
+            [class.error]="isFieldInvalidUsuario('cpf')"
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dataNascimento">Data de Nascimento *</label>
+          <input
+            type="date"
+            id="dataNascimento"
+            formControlName="dataNascimento"
+            [class.error]="isFieldInvalidUsuario('dataNascimento')"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="tipoUsuario">Tipo de Usuário *</label>
+          <select
+            id="tipoUsuario"
+            formControlName="tipoUsuario"
+            [class.error]="isFieldInvalidUsuario('tipoUsuario')"
+          >
+            <option value="USER">Usuário</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="!usuarioEditando">
+        <label for="senha">Senha *</label>
+        <input
+          type="password"
+          id="senha"
+          formControlName="senha"
+          [class.error]="isFieldInvalidUsuario('senha')"
+        >
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" (click)="fecharModalUsuario()">
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="usuarioForm.invalid || isLoading"
+        >
+          {{ isLoading ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+

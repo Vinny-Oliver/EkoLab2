@@ -1,0 +1,175 @@
+<div class="cursos-container">
+  <!-- Header da página -->
+  <section class="cursos-header">
+    <div class="container">
+      <h1>Nossos Cursos</h1>
+      <p>Descubra nossa ampla variedade de cursos de tecnologia e transforme sua carreira</p>
+    </div>
+  </section>
+
+  <!-- Seção do Vídeo sobre o Projeto -->
+  <section class="video-section">
+    <div class="container">
+      <div class="video-content">
+        <h2>Assista ao vídeo sobre o projeto do site</h2>
+        
+        <div class="video-container">
+          <video controls width="100%" poster="/assets/videos/poster.jpg">
+            <source src="/assets/videos/demonstracao.mp4" type="video/mp4" />
+            Seu navegador não suporta o elemento de vídeo.
+          </video>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros -->
+  <section class="filtros-section">
+    <div class="container">
+      <div class="filtros-container">
+        <div class="filtro-grupo">
+          <label for="busca">Buscar curso:</label>
+          <input type="text" id="busca" [(ngModel)]="filtros.busca" (input)="aplicarFiltros()"
+            placeholder="Digite o nome do curso..." class="input-busca">
+        </div>
+
+        <div class="filtro-grupo">
+          <label for="categoria">Categoria:</label>
+          <select id="categoria" [(ngModel)]="filtros.categoria" (change)="aplicarFiltros()" class="select-filtro">
+            <option value="">Todas as categorias</option>
+            <option value="Desenvolvimento Web">Desenvolvimento Web</option>
+            <option value="Banco de Dados">Banco de Dados</option>
+            <option value="Programação">Programação</option>
+            <option value="Mobile">Desenvolvimento Mobile</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Design">Design</option>
+          </select>
+        </div>
+
+        <div class="filtro-grupo">
+          <label for="nivel">Nível:</label>
+          <select id="nivel" [(ngModel)]="filtros.nivel" (change)="aplicarFiltros()" class="select-filtro">
+            <option value="">Todos os níveis</option>
+            <option value="INICIANTE">Iniciante</option>
+            <option value="INTERMEDIARIO">Intermediário</option>
+            <option value="AVANCADO">Avançado</option>
+          </select>
+        </div>
+
+        <div class="filtro-grupo">
+          <label for="modalidade">Modalidade:</label>
+          <select id="modalidade" [(ngModel)]="filtros.modalidade" (change)="aplicarFiltros()" class="select-filtro">
+            <option value="">Todas as modalidades</option>
+            <option value="ONLINE">Online</option>
+            <option value="PRESENCIAL">Presencial</option>
+            <option value="HIBRIDO">Híbrido</option>
+          </select>
+        </div>
+
+        <button class="btn-limpar" (click)="limparFiltros()">
+          <i class="icon-refresh"></i>
+          Limpar Filtros
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lista de cursos -->
+  <section class="cursos-section">
+    <div class="container">
+      <div class="cursos-info">
+        <p class="resultados-count">
+          {{ cursosFiltrados.length }} curso(s) encontrado(s)
+        </p>
+      </div>
+
+      <div class="cursos-grid" *ngIf="cursosFiltrados.length > 0; else noCursos">
+        <div class="curso-card" *ngFor="let curso of cursosFiltrados">
+          <div class="curso-image">
+            <img [src]="curso.imagem || '/assets/default-course.jpg'" [alt]="curso.nome">
+            <div class="curso-badges">
+              <span class="badge badge-nivel" [class]="'badge-' + curso.nivel.toLowerCase()">
+                {{ getNivelLabel(curso.nivel) }}
+              </span>
+              <span class="badge badge-modalidade">{{ getModalidadeLabel(curso.modalidade) }}</span>
+            </div>
+          </div>
+
+          <div class="curso-content">
+            <div class="curso-categoria">{{ curso.categoria }}</div>
+            <h3 class="curso-title">{{ curso.nome }}</h3>
+            <p class="curso-description">{{ curso.descricao }}</p>
+
+            <div class="curso-instructor">
+              <i class="icon-user"></i>
+              <span>{{ curso.instrutor }}</span>
+            </div>
+
+            <div class="curso-meta">
+              <div class="meta-item">
+                <i class="icon-clock"></i>
+                <span>{{ curso.cargaHoraria }}h</span>
+              </div>
+              <div class="meta-item">
+                <i class="icon-calendar"></i>
+                <span>{{ formatDate(curso.dataInicio) }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="icon-users"></i>
+                <span>{{ curso.vagasDisponiveis }} vagas</span>
+              </div>
+            </div>
+
+            <div class="curso-footer">
+              <div class="curso-price">
+                <span *ngIf="curso.preco > 0; else freeCourse" class="price">
+                  R$ {{ curso.preco | number:'1.2-2' }}
+                </span>
+                <ng-template #freeCourse>
+                  <span class="price free">Gratuito</span>
+                </ng-template>
+              </div>
+
+              <div class="curso-actions">
+                <button class="btn btn-outline" (click)="verDetalhes(curso)">
+                  Ver Detalhes
+                </button>
+                <button class="btn btn-primary" (click)="inscreverCurso(curso)"
+                  [disabled]="curso.vagasDisponiveis === 0">
+                  {{ curso.vagasDisponiveis === 0 ? 'Esgotado' : 'Inscrever-se' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noCursos>
+        <div class="no-cursos">
+          <div class="no-cursos-content">
+            <i class="icon-search"></i>
+            <h3>Nenhum curso encontrado</h3>
+            <p>Tente ajustar os filtros ou buscar por outros termos.</p>
+            <button class="btn btn-primary" (click)="limparFiltros()">
+              Ver Todos os Cursos
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section" *ngIf="cursosFiltrados.length > 0">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Não encontrou o que procurava?</h2>
+        <p>Entre em contato conosco e sugira novos cursos para nossa plataforma</p>
+        <button class="btn btn-secondary" routerLink="/sobre">
+          Fale Conosco
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

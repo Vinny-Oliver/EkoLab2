@@ -1,0 +1,22 @@
+<div class="dashboard-container">
+    <h2>Dashboard de Tarefas</h2>
+
+    <button type="button" class="btn-add" (click)="addTarefa()">Adicionar Tarefa</button>
+
+    <ul class="tarefas-lista">
+        <li *ngFor="let tarefa of tarefas" class="tarefa-item">
+            <div *ngIf="!tarefa.editando" class="tarefa-view">
+                <h3>{{ tarefa.titulo }}</h3>
+                <p>{{ tarefa.descricao }}</p>
+                <button class="btn" (click)="editarTarefa(tarefa)">Editar</button>
+                <button class="btn btn-danger" (click)="removerTarefa(tarefa.id)">Excluir</button>
+            </div>
+
+            <div *ngIf="tarefa.editando" class="tarefa-editar">
+                <input type="text" [(ngModel)]="tarefa.titulo" />
+                <textarea rows="3" [(ngModel)]="tarefa.descricao"></textarea>
+                <button class="btn btn-success" (click)="salvarTarefa(tarefa)">Salvar</button>
+            </div>
+        </li>
+    </ul>
+</div>
