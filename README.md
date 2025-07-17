@@ -74,18 +74,6 @@ Esses dados reforçam a necessidade de soluções externas à equidade educacion
 - Ajustes finais e commits no GitHub.
 - Testes finais e documentação do projeto.
 
-## 📌 Como será feita a distribuição das atividades entre os integrantes do squad para essa primeira entrega? 
-
-- **Desenvolvedores**: Eduardo Correia, Marcus Oliveira, Letícia Morais
-- **Pesquisadores**: Giovanna Ferreira
-- **Documentação**: Letícia Morais, Giovanna Ferreira
-- **Apresentação**: Eduardo Correia, Marcus Oliveira, Letícia Morais, Giovanna Ferreira
-
-## 🛠️ Qual a ferramenta de gerenciamento de projeto será usada para o monitoramento das atividades? Ex: Trello, Asana, Jira, Monday.
-
-Utilizaremos **Trello** para o monitoramento e distribuição de atividades.
-
----
 
 📌 **Acompanhe nosso progresso!** 🚀
 
